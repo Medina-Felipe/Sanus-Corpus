@@ -1,4 +1,10 @@
 package com.backendpill.auth.application.DTOs;
 
-public class UserResponse {
+public record UserResponse(
+        Long id,
+        String name,
+        String lastName,
+        String email,
+        String role
+) {
 }
