@@ -1,9 +1,9 @@
-package com.backendpill.favorites.infrastructure;
+package com.backendpill.legal.infrastructure;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/favorite")
-public class FavoriteController {
+@RequestMapping("/api/legal")
+public class LegalController {
 }
