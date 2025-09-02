@@ -6,10 +6,7 @@ import com.backendpill.auth.application.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,18 +14,19 @@ import org.springframework.web.bind.annotation.*;
 
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final UserService userService;
+    //private final AuthenticationManager authenticationManager;
+   // private final JwtService jwtService;
+   // private final UserService userService;
 
 
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
+    /*public AuthController(AuthenticationManager authenticationManager,JwtService jwtService*//*,UserService userService) {
+        //this.authenticationManager = authenticationManager;
+        //this.jwtService = jwtService;
         this.userService = userService;
     }
+    */
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
@@ -39,9 +37,9 @@ public class AuthController {
         UserResponse user = userService.findByEmailAsResponse(principal.getUsername());
 
         return ResponseEntity.ok(new AuthResponse(token, user));
-    }
+    }*/
 
-    @PostMapping("/register")
+   /* @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody UserRequest request) {
         UserResponse created = userService.register(request);
         // Autologin: emitimos token directo para el nuevo usuario
@@ -52,5 +50,5 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal(expression = "username") String email) {
         return ResponseEntity.ok(userService.findByEmailAsResponse(email));
-    }
+    }*/
 }

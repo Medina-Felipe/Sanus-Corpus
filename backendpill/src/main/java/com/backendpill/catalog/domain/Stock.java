@@ -15,4 +15,5 @@ public class Stock {
 
     @Id
     private Long id;
+    private Long amount;
 }
