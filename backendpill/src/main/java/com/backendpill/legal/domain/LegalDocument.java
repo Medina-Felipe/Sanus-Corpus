@@ -21,5 +21,5 @@ public class LegalDocument {
     @Enumerated(EnumType.STRING)
     private DocumentType type;
     private String content;
-    private LocalDateTime localDateTime;
+    private LocalDateTime created;
 }

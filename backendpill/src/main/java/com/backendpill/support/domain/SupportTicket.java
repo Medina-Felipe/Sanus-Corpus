@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -14,4 +16,8 @@ public class SupportTicket {
 
     @Id
     private Long id;
+    private String title;
+    private String description;
+    private String status;
+    private LocalDateTime created;
 }

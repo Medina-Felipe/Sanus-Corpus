@@ -7,21 +7,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "products")
 public class Product {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private double price;
     private String description;
     @OneToMany//(cascade = CascadeType.)
-    private List<Stock> stocks = new ArrayList<>();
+    private List<Integer> stocks = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Brand> brands = new ArrayList<>();
     @ManyToMany
@@ -30,7 +34,8 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<Category> categories = new ArrayList<>();
+    private Set<Category> categories = new HashSet<>();
     private TypeMedicine typeMedicines;
+    private boolean favorite;
 
 }

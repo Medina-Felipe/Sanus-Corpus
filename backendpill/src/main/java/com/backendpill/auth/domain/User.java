@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
 public class User {
 
     @Id
@@ -24,5 +23,5 @@ public class User {
     private String email;
     private String phoneNumber;
     private String password;
-    private Role role = Role.CLIENT;
+    private Role role;
 }
