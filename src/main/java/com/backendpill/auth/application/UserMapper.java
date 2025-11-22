@@ -22,7 +22,7 @@ public class UserMapper {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getRole().name() // Devuelve el nombre del Enum (ej. "CLIENT")
+                user.getRole()        // CORRECTO: Esto devuelve el objeto Role que espera el Record// Devuelve el nombre del Enum (ej. "CLIENT")
         );
     }
 }

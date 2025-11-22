@@ -35,7 +35,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.login>sqp_d6e1671e24ae86f1a9fec1ea218c505358d7521c</sonar.login>
+        <sonar.login>sqp_964fd1f1a81707196ed3f8584d0b128cc5280801</sonar.login>
         <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.sources>src/main</sonar.sources>
         <sonar.tests>src/test</sonar.tests>

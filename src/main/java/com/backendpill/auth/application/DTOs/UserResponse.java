@@ -1,5 +1,7 @@
 package com.backendpill.auth.application.DTOs;
 
+import com.backendpill.auth.domain.Role;
+
 // Añadimos phoneNumber para que sea consistente con el UserMapper y UserRequest
 public record UserResponse(
         Long id,
@@ -7,5 +9,5 @@ public record UserResponse(
         String lastName,
         String email,
         String phoneNumber, // <-- CORRECCIÓN AQUÍ
-        String role
+        Role role
 ) {}
