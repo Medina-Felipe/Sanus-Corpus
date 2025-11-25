@@ -1,6 +1,6 @@
 package com.backendpill.shared.infrastructure;
 
-import com.backendpill.shared.domain.ApiResponse;
+import com.backendpill.shared.application.DTOs.ApiResponse;
 import com.backendpill.shared.domain.BusinessException;
 import com.backendpill.shared.domain.NotFoundException;
 import com.backendpill.shared.domain.UnauthorizedException;

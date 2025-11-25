@@ -1,6 +1,6 @@
 package com.backendpill.support.application;
 
-import com.backendpill.support.infrastructure.SupportRepository;
+import com.backendpill.support.domain.repository.SupportRepository;
 import org.springframework.stereotype.Service;
 
 @Service

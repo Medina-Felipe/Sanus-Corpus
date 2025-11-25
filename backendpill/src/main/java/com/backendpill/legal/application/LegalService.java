@@ -1,6 +1,6 @@
 package com.backendpill.legal.application;
 
-import com.backendpill.legal.infrastructure.LegalRepository;
+import com.backendpill.legal.domain.repository.LegalRepository;
 import org.springframework.stereotype.Service;
 
 @Service

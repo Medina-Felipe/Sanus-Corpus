@@ -1,8 +1,7 @@
 package com.backendpill.catalog.application;
 
 
-import com.backendpill.catalog.infrastructure.ProductRepository;
-import org.springframework.security.core.parameters.P;
+import com.backendpill.catalog.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 @Service

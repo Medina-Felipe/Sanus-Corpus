@@ -1,7 +1,7 @@
 package com.backendpill.catalog.application;
 
 
-import com.backendpill.catalog.infrastructure.CategoryRepository;
+import com.backendpill.catalog.domain.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 @Service
