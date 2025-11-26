@@ -1,74 +1,64 @@
 package com.backendpill.auth.infrastructure;
 
-import com.backendpill.auth.application.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Habilita la seguridad por anotaciones (ej. @PreAuthorize)
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // Necesitaremos el filtro JWT que valida el token en cada petición
-    // (Te daré el código de este filtro en el siguiente paso)
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authenticationProvider; // Inyectado desde ApplicationConfig
 
-    // Nuestro UserService que implementa UserDetailsService
-    private final UserService userService;
-
-    // BEAN 1: EL FILTRO DE SEGURIDAD PRINCIPAL
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF (común en APIs REST con JWT)
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults()) // 1. Activamos configuración CORS por defecto (busca el Bean de abajo)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Rutas públicas de auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Permitir Swagger
-                        .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/**").authenticated() // Ejemplo explícito
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // API sin estado (no usa sesiones)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider()) // Seteamos nuestro proveedor de auth
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Añadimos el filtro JWT
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // BEAN 2: EL BEAN QUE TE FALTABA (AuthenticationManager)
-    // Lo exponemos desde la configuración de autenticación de Spring
+    // BEAN: Configuración CORS para permitir que tu Frontend hable con el Backend
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-    // BEAN 3: EL PROVEEDOR DE AUTENTICACIÓN
-    // Conecta Spring Security con tu UserService
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService); // Le dice a Spring que use tu UserService
-        authProvider.setPasswordEncoder(passwordEncoder()); // Le dice que use BCrypt
-        return authProvider;
-    }
+        // En producción, reemplaza "*" con tu dominio real (ej. "https://miapp.com")
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
 
-    // BEAN 4: EL HASHEADOR DE CONTRASEÑAS
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
