@@ -1,33 +1,45 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+# Archivos Generados por el IDE (IntelliJ)
+# =======================================
+.idea/             # Directorio de configuración local de IntelliJ
+*.iml              # Archivos de módulos de IntelliJ
 *.iws
-*.iml
 *.ipr
+.vscode/           # Configuración de VS Code (si aplica)
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# Archivos Generados por el Build Tool (Maven/Gradle)
+# ===================================================
+target/
+!**/src/main/**/target/classes/db/migration  # Excluir la carpeta de migraciones si Flyway está en target (caso raro, mejor asegurar)
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+bin/
 
-### VS Code ###
-.vscode/
+# Archivos Generados por Java
+# ===========================
+*.class
+*.jar
+*.war
+*.zip
+*.log
+*.lock
+/tmp
+
+# Archivos Específicos de Spring Boot
+# ===================================
+# El directorio donde se ejecuta Spring Boot Devtools
+# Si tu proyecto usa el directorio root del IDE.
+**/nohup.out
+# Propiedades de Spring Boot Devtools
+.spring-boot-devtools.properties
+
+# Configuracion de Entorno Local (SEGURIDAD/PRODUCCIÓN)
+# ======================================================
+.env                       # Variables de entorno local
+**/*.properties.local      # Archivos de propiedades locales
+**/*.yml.local             # Archivos de YAML locales
+src/main/resources/application-local.properties # Usado a veces para secretos
+
+# Datos Binarios y Volúmenes de Docker
+# ====================================
+# ¡CRUCIAL! Excluye los datos binarios de PostgreSQL y otros servicios
+.docker-data/
+docker-compose.override.yml # Si se usa para overrides locales
