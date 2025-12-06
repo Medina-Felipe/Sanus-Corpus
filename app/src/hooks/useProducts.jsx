@@ -1,6 +1,5 @@
-// src/hooks/useProducts.jsx
 import { useState, useEffect } from 'react';
-import { mockProducts } from '../data/products'; // ✅ Ahora este archivo existe
+import { mockProducts } from '../data/products'; 
 
 export const useProducts = (selectedCategory = null) => {
   const [products, setProducts] = useState([]);
@@ -12,7 +11,6 @@ export const useProducts = (selectedCategory = null) => {
       try {
         setLoading(true);
         
-        // Simular delay de red
         setTimeout(() => {
           let filteredProducts = mockProducts;
           
@@ -28,7 +26,7 @@ export const useProducts = (selectedCategory = null) => {
         
       } catch (err) {
         console.error('Error fetching products:', err);
-        setProducts(mockProducts); // Fallback a datos mock
+        setProducts(mockProducts); 
         setLoading(false);
       }
     };

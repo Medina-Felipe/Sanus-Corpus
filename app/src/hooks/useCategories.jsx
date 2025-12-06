@@ -1,4 +1,3 @@
-// src/hooks/useCategories.js
 import { useState, useEffect } from 'react';
 
 export const useCategories = () => {
@@ -13,7 +12,6 @@ export const useCategories = () => {
         setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
-        // Fallback a datos locales
         setCategories(staticCategories);
       } finally {
         setLoading(false);

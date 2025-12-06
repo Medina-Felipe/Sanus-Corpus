@@ -1,6 +1,5 @@
-// src/components/Layout/CategoriesBar.jsx
 import React from "react";
-import { categories } from "../../data/categories"; // ✅ Ruta corregida
+import { categories } from "../../data/categories";
 
 const CategoriesBar = ({ selectedCategory, onCategorySelect }) => {
   return (

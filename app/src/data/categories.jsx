@@ -66,33 +66,3 @@ export const categories = [
     description: "Productos de belleza y maquillaje"
   }
 ];
-
-// 🚀 PARA BACKEND: Reemplazar con esta función
-/*
-export const useCategories = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        // ✅ CONEXIÓN BACKEND: Descomentar cuando tengas API
-        // const response = await fetch('/api/categories');
-        // const data = await response.json();
-        // setCategories(data);
-        
-        // ⏳ Por ahora usa datos mock
-        setCategories(staticCategories);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  return { categories, loading };
-};
-*/

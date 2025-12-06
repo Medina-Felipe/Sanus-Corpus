@@ -1,11 +1,12 @@
 import sunscreen from '../images/photo/sunscreen.png';
+
 export const mockProducts = [
   {
     id: 1,
     name: "Protector Solar FPS 50",
     description: "Protector solar facial para piel sensible con protección UVA/UVB",
-    price: 'lukita',
-    image: "/src/images/photo/sunscreen.png", // ✅ Ruta absoluta desde public
+    price: 14990,
+    image: "/src/images/photo/sunscreen.png",
     category: "dermocosmetica",
     stock: 25,
     rating: 4.5
@@ -14,8 +15,8 @@ export const mockProducts = [
     id: 2,
     name: "Vitamina C 1000mg",
     description: "Suplemento de vitamina C de liberación prolongada",
-    price: 'dos lukitas',
-    image: "/src/images/photo/vitamin.png", // ✅ Usa misma imagen por ahora
+    price: 2990,
+    image: "/src/images/photo/vitamin.png", 
     category: "vitaminas-suplementos",
     stock: 40,
     rating: 4.8
@@ -24,8 +25,8 @@ export const mockProducts = [
     id: 3,
     name: "Paracetamol 500mg",
     description: "Analgésico y antipirético de venta libre",
-    price: 'cinco peso',
-    image: "/src/images/photo/paracetamol.png", // ✅ Misma imagen temporal
+    price: 1990, // Ajustado a precio estándar de caja
+    image: "/src/images/photo/paracetamol.png",
     category: "medicamentos",
     stock: 100,
     rating: 4.3
@@ -34,7 +35,7 @@ export const mockProducts = [
     id: 4,
     name: "Shampoo Anticaída",
     description: "Shampoo fortalecedor con biotina y queratina",
-    price: 18.75,
+    price: 3990,
     image: "/src/images/photo/shampoo.png",
     category: "cuidado-capilar",
     stock: 30,
@@ -44,7 +45,7 @@ export const mockProducts = [
     id: 5,
     name: "Crema Hidratante Facial",
     description: "Crema hidratante con ácido hialurónico para piel seca",
-    price: 22.50,
+    price: 5990,
     image: "/images/moisturizer.jpg",
     category: "cuidado-piel",
     stock: 35,
@@ -54,7 +55,7 @@ export const mockProducts = [
     id: 6,
     name: "Anticonceptivos Orales",
     description: "Método anticonceptivo hormonal mensual",
-    price: 12.99,
+    price: 12990, // Conversión aprox de 12.99
     image: "/images/birth-control.jpg",
     category: "anticonceptivos",
     stock: 20,
@@ -64,7 +65,7 @@ export const mockProducts = [
     id: 7,
     name: "Pañales Talla 3",
     description: "Pañales desechables ultra absorbentes",
-    price: 32.99,
+    price: 26990, // Conversión aprox de 32.99
     image: "/images/diapers.jpg",
     category: "infantil-mama",
     stock: 50,
@@ -74,7 +75,7 @@ export const mockProducts = [
     id: 8,
     name: "Jabón Líquido Antibacterial",
     description: "Jabón líquido con triclosán para manos",
-    price: 6.99,
+    price: 4990,
     image: "/images/soap.jpg",
     category: "higiene-cuidado-personal",
     stock: 60,
@@ -84,7 +85,7 @@ export const mockProducts = [
     id: 9,
     name: "Labial Hidratante con Color",
     description: "Labial con vitamina E y protección solar",
-    price: 9.99,
+    price: 7990,
     image: "/images/lipstick.jpg",
     category: "belleza",
     stock: 45,
@@ -94,7 +95,7 @@ export const mockProducts = [
     id: 10,
     name: "Multivitamínico Completo",
     description: "Complejo multivitamínico con minerales esenciales",
-    price: 28.50,
+    price: 22990,
     image: "/images/multivitamin.jpg",
     category: "vitaminas-suplementos",
     stock: 25,
@@ -104,7 +105,7 @@ export const mockProducts = [
     id: 11,
     name: "Crema para Acné",
     description: "Tratamiento tópico para acné leve a moderado",
-    price: 16.75,
+    price: 14990,
     image: "/images/acne-cream.jpg",
     category: "dermocosmetica",
     stock: 30,
@@ -114,7 +115,7 @@ export const mockProducts = [
     id: 12,
     name: "Suplemento de Hierro",
     description: "Suplemento de hierro para anemia y energía",
-    price: 13.25,
+    price: 10990,
     image: "/images/iron-supplement.jpg",
     category: "vitaminas-suplementos",
     stock: 35,

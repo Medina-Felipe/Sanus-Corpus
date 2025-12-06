@@ -1,4 +1,3 @@
-// components/Layout/ProductGrid.jsx
 import React from "react";
 import ProductCard from "./ProductCard";
 

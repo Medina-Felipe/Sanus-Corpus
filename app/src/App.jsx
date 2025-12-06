@@ -1,20 +1,17 @@
-// src/App.jsx
-import React from 'react'
-import { Routes, Route } from 'react-router-dom' // ❌ NO Router aquí
-import HomePage from './Pages/HomePage'
-import ProductPage from './Pages/ProductPage'
-import SearchPage from './Pages/Search.Page'
+import Header from "./components/Layout/Header"; 
+import Footer from "./components/Layout/Footer"; 
+import RoutesConfig from "./RoutesConfig"; 
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Routes> {/* ✅ Solo Routes, NO Router */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/search" element={<SearchPage />} />
-      </Routes>
+    <div className="flex flex-col min-h-screen">
+      <Header /> 
+      <main className="flex-grow">
+        <RoutesConfig /> 
+      </main>
+      <Footer /> 
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
