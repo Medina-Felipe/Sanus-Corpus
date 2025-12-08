@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostgresCategoryRepository extends JpaRepository<Category, Long>, CategoryRepository {
+    // Spring Data JPA implementa findAllById(Iterable<Long> ids) automáticamente.
 }

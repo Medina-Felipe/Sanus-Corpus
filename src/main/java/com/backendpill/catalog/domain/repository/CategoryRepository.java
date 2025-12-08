@@ -6,9 +6,11 @@ import java.util.Optional;
 
 public interface CategoryRepository {
     Category save(Category category);
+    // ¡NUEVO!
+
     Optional<Category> findById(Long id);
     List<Category> findAll();
-    List<Category> findAllById(Iterable<Long> ids); // Necesario para ProductService
+    List<Category> findAllById(Iterable<Long> ids);
     void deleteById(Long id);
     boolean existsById(Long id);
 }

@@ -6,6 +6,9 @@ import java.util.Optional;
 
 public interface BrandRepository {
     Brand save(Brand brand);
+    // ¡NUEVO! Necesario para el Seeder
+
+
     Optional<Brand> findById(Long id);
     List<Brand> findAll();
     void deleteById(Long id);

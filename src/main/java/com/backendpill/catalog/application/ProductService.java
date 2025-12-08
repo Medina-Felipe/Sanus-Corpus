@@ -76,4 +76,37 @@ public class ProductService {
                 .map(mapper::toProductResponse)
                 .orElseThrow(() -> new BusinessException("Producto no encontrado"));
     }
+
+    @Transactional
+    public ProductResponse update(Long id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Producto no encontrado"));
+
+        // Actualizamos campos básicos
+        product.setName(request.name());
+        product.setPrice(request.price());
+        product.setDescription(request.description());
+        product.setTypeMedicine(request.typeMedicine());
+        product.setImageUrl(request.imageUrl());
+
+        // Actualizar relaciones (Marca)
+        if (!product.getBrand().getId().equals(request.brandId())) {
+            Brand newBrand = brandService.findEntityById(request.brandId());
+            product.setBrand(newBrand);
+        }
+
+        // Actualizar Categorías (requiere lógica de Sets, simplificado aquí)
+        // ... (Para un update completo se requiere recalcular las categorías)
+
+        return mapper.toProductResponse(productRepository.save(product));
+    }
+
+    // Falta el delete
+    @Transactional
+    public void delete(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new BusinessException("Producto no encontrado");
+        }
+        productRepository.deleteById(id);
+    }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PostgresProductRepository extends JpaRepository<Product, Long>, ProductRepository {
 
-    // Spring Data JPA generará la query automáticamente basada en el nombre del método
+    // Spring Data crea la query: SELECT * FROM products WHERE slug = ?
     @Override
     Optional<Product> findBySlug(String slug);
 }

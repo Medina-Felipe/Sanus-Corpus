@@ -6,10 +6,12 @@ import java.util.Optional;
 
 public interface ProductRepository {
     Product save(Product product);
+    // ¡NUEVO!
+
+
     Optional<Product> findById(Long id);
     List<Product> findAll();
     void deleteById(Long id);
-
-    // Método específico de negocio que añadimos antes
     Optional<Product> findBySlug(String slug);
+    boolean existsById(Long id);
 }

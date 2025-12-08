@@ -40,4 +40,23 @@ public class BrandService {
         // Aquí podrías validar si la marca tiene productos antes de borrar
         brandRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    public BrandResponse findById(Long id) {
+        return brandRepository.findById(id)
+                .map(mapper::toBrandResponse)
+                .orElseThrow(() -> new BusinessException("Marca no encontrada: " + id));
+    }
+
+    // Falta el update
+    @Transactional
+    public BrandResponse update(Long id, BrandRequest request) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Marca no encontrada: " + id));
+
+        brand.setName(request.name());
+        brand.setDescription(request.description());
+
+        return mapper.toBrandResponse(brandRepository.save(brand));
+    }
 }
