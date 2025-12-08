@@ -1,0 +1,27 @@
+services:
+  postgres:
+    container_name: backendpill-db
+    image: postgres:15.4-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=backendpill
+    volumes:
+      - ./.docker-data/postgres:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    container_name: backendpill-adminer
+    image: adminer
+    restart: always
+    ports:
+      - "8090:8080"
+    depends_on:
+      - postgres
