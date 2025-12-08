@@ -1,9 +1,13 @@
 package com.backendpill.legal.domain.repository;
 
+import com.backendpill.legal.domain.DocumentType;
 import com.backendpill.legal.domain.LegalDocument;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface LegalRepository extends JpaRepository<LegalDocument, Long> {
+public interface LegalRepository {
+    LegalDocument save(LegalDocument document);
+    Optional<LegalDocument> findByType(DocumentType type);
+    List<LegalDocument> findAll();
+    // No necesitamos delete, los documentos legales no se borran, se desactivan o actualizan.
 }
