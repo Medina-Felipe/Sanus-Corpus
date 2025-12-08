@@ -1,20 +1,23 @@
 package com.backendpill.auth.domain.repository;
 
 import com.backendpill.auth.domain.User;
+import java.util.List;
 import java.util.Optional;
 
-/**
- * Este es el PUERTO del dominio.
- * Define el contrato que la capa de aplicación necesita,
- * sin saber nada sobre bases de datos o Spring.
- */
+// Arquitectura: Esta interfaz define el contrato (Puerto).
+// La implementación real la hará Spring Data en tiempo de ejecución.
 public interface UserRepository {
 
     User save(User user);
 
     Optional<User> findByEmail(String email);
 
-    // Aquí puedes agregar otros métodos de negocio puros, ej:
-    // Optional<User> findById(Long id);
-    // void delete(User user);
+    Optional<User> findById(Long id);
+
+    // Es buena práctica devolver List, pero considera Page<User> si esperas muchos usuarios.
+    List<User> findAll();
+
+    boolean existsById(Long id);
+
+    void deleteById(Long id);
 }

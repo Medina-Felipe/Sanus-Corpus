@@ -1,12 +1,14 @@
 package com.backendpill.auth.application;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct; // Importante
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -16,65 +18,62 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${app.jwt.secret}")
-    private String secret; // Base64 o texto plano (elige una opción en getSigningKey)
+    private String secret;
 
-    // En MILISEGUNDOS (ej: 3600000 = 1h)
     @Value("${app.jwt.expiration-ms}")
     private long expirationMs;
 
-    /* -------------------- CREATE / SIGN (0.11.x) -------------------- */
-    public String generateToken(String username, Map<String, Object> extraClaims) {
-        Date now = new Date();
-        Date exp = new Date(now.getTime() + expirationMs);
+    private Key signingKey;
 
-        return Jwts.builder()
-                .setClaims(extraClaims)                    // 0.11.x
-                .setSubject(username)                      // 0.11.x
-                .setIssuedAt(now)
-                .setExpiration(exp)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // 0.11.x requiere alg
-                .compact();
+    // ARQUITECTURA: Inicialización Eager (Ansiosa)
+    // Decodificamos la key una sola vez al arrancar la app, no en cada petición.
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String username) {
         return generateToken(username, Map.of());
     }
 
-    /* -------------------- READ / VERIFY (0.11.x) -------------------- */
+    public String generateToken(String username, Map<String, Object> extraClaims) {
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     public boolean isTokenValid(String token, String expectedUsername) {
         final String username = extractUsername(token);
-        return expectedUsername.equals(username) && !isExpired(token);
+        return (username.equals(expectedUsername)) && !isTokenExpired(token);
     }
 
-    private boolean isExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> resolver) {
-        Claims claims = Jwts.parserBuilder()                 // 0.11.x
-                .setSigningKey(getSigningKey())
-                .setAllowedClockSkewSeconds(60)              // tolerancia opcional
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(signingKey) // Usamos la key cacheada
                 .build()
-                .parseClaimsJws(clean(token))                // 0.11.x
+                .parseClaimsJws(token)
                 .getBody();
-        return resolver.apply(claims);
-    }
-
-    private String clean(String token) {
-        return token == null ? null : token.replaceFirst("(?i)^Bearer\\s+", "").trim();
-    }
-
-    /* -------------------- KEY -------------------- */
-    private Key getSigningKey() {
-        // === OPCIÓN A: SECRET EN BASE64 (recomendada) ===
-        byte[] keyBytes = Decoders.BASE64.decode(secret);    // ≥32 bytes decodificados
-        return Keys.hmacShaKeyFor(keyBytes);
-
-        // === OPCIÓN B: SECRET EN TEXTO PLANO UTF-8 ===
-        //return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 }

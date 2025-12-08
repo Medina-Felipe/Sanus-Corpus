@@ -1,14 +1,13 @@
 package com.backendpill.catalog.domain.repository;
 
 import com.backendpill.catalog.domain.Brand;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
+import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface BrandRepository extends JpaRepository<Brand,Long> {
+public interface BrandRepository {
+    Brand save(Brand brand);
     Optional<Brand> findById(Long id);
-
-
+    List<Brand> findAll();
+    void deleteById(Long id);
+    boolean existsById(Long id);
 }

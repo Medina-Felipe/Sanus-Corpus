@@ -6,5 +6,4 @@ public enum TypeMedicine {
     BIOEQUIVALENT,
     W_EQUIVALENT,
     OTHER
-
 }

@@ -1,7 +1,7 @@
 package com.backendpill.auth.application;
 
-import com.backendpill.auth.application.DTOs.UserRequest;
-import com.backendpill.auth.application.DTOs.UserResponse;
+import com.backendpill.auth.application.dtos.UserRequest;
+import com.backendpill.auth.application.dtos.UserResponse;
 import com.backendpill.auth.domain.Role;
 import com.backendpill.auth.domain.User;
 import com.backendpill.auth.domain.repository.UserRepository;

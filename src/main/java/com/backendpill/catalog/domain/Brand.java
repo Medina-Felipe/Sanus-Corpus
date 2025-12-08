@@ -1,17 +1,15 @@
 package com.backendpill.catalog.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -28,20 +26,23 @@ public class Brand {
     @Lob
     private String description;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @Builder.Default // <-- CORRECCIÓN DE WARNING
-    private Set<Product> products = new HashSet<>();
+    // ARQUITECTURA: Eliminamos @OneToMany List<Product>.
+    // Razón: Performance. No queremos cargar todos los productos al cargar la marca.
+    // Si necesitas los productos de una marca, úsalo en el Repository: findByBrandId(id).
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
         Brand brand = (Brand) o;
-        return id != null && id.equals(brand.id);
+        return getId() != null && Objects.equals(getId(), brand.getId());
     }
 
     @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

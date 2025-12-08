@@ -1,10 +1,15 @@
 package com.backendpill.catalog.domain.repository;
 
 import com.backendpill.catalog.domain.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface ProductRepository extends JpaRepository<Product,Long> {
+public interface ProductRepository {
+    Product save(Product product);
+    Optional<Product> findById(Long id);
+    List<Product> findAll();
+    void deleteById(Long id);
 
+    // Método específico de negocio que añadimos antes
+    Optional<Product> findBySlug(String slug);
 }
