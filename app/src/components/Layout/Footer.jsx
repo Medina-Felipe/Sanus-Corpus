@@ -1,8 +1,10 @@
 import React from 'react';
-
+import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white mt-8">
+            {/* Link secreto para desarrolladores */}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           
@@ -50,11 +52,17 @@ const Footer = () => {
           </div>
 
         </div>
+        
 
         <div className="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
           © {new Date().getFullYear()} SANUS-CORPUS. Todos los derechos reservados.
         </div>
       </div>
+<div className="bg-gray-900 py-2 text-center">
+    <Link to="/admin" className="text-gray-600 text-xs hover:text-white">
+        🔒 Acceso Admin (Solo Devs)
+    </Link>
+</div>
     </footer>
   );
 };

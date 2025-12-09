@@ -42,22 +42,32 @@ const ProfileMenu = ({ isOpen, onClose }) => {
         </div>
 
 
-        {/* opciones */}
+{/* opciones */}
         <ul className="space-y-2 mb-6">
-          {/* Enlaces con iconos */}
-          <MenuItem href="/pedidos" icon="📦" text="Mis Pedidos" />
-          <MenuItem href="/perfil" icon="⚙️" text="Configuración de Cuenta" />
-          <MenuItem href="/favoritos" icon="❤️" text="Lista de Deseos" />
+            {/* Enlaces con iconos */}
+            
+            {/* 1. CORREGIDO: /pedidos  => /mis-pedidos */}
+            <MenuItem href="/mis-pedidos" icon="📦" text="Mis Pedidos" />
+            
+            {/* Configuración usa /perfil, y es correcto si así lo definiste */}
+            <MenuItem href="/perfil" icon="⚙️" text="Configuración de Cuenta" />
+            
+            <MenuItem href="/favoritos" icon="❤️" text="Lista de Deseos" />
         </ul>
 
         {/* soporte */}
         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 border-t pt-4">
-          Ayuda y Legal
+            Ayuda y Legal
         </h3>
         <ul className="space-y-2 mb-8">
-          <MenuItem href="/faq" icon="❓" text="Preguntas Frecuentes (FAQ)" />
-          <MenuItem href="/contacto" icon="💬" text="Contactar Soporte" />
-          <MenuItem href="/terminos" icon="📜" text="Términos y Condiciones" />
+            {/* 2. CORREGIDO: /faq => /preguntas-frecuentes */}
+            <MenuItem href="/preguntas-frecuentes" icon="❓" text="Preguntas Frecuentes (FAQ)" />
+            
+            {/* 3. CORREGIDO: /contacto => /soporte */}
+            <MenuItem href="/soporte" icon="💬" text="Contactar Soporte" />
+            
+            {/* 4. Esta ya estaba correcta: /terminos */}
+            <MenuItem href="/terminos" icon="📜" text="Términos y Condiciones" />
         </ul>
 
         {/* Cerrar sesión funcional */}
