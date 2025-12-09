@@ -1,22 +1,27 @@
 import sunscreen from '../images/photo/sunscreen.png';
 
-export const mockProducts = [
-  {
-    id: 1,
+export const mockProducts = [  {
+id: 1,
     name: "Protector Solar FPS 50",
-    description: "Protector solar facial para piel sensible con protección UVA/UVB",
+    description: "Protector solar facial para piel sensible con protección UVA/UVB de amplio espectro.",
     price: 14990,
-    image: "/src/images/photo/sunscreen.png",
+    image: "/src/Images/photo/sunscreen.png",
     category: "dermocosmetica",
     stock: 25,
-    rating: 4.5
+    rating: 4.5,
+
+    prescription: false, 
+    usageMode: "Vía tópica (Aplicación externa)",
+    instructions: "Aplicar generosamente sobre el rostro 30 minutos antes de la exposición solar. Reaplicar cada 2 horas.",
+    recommendedFor: "Pieles sensibles y mixtas.",
+    precautions: "Evitar contacto directo con los ojos. Si produce irritación, suspender uso."
   },
   {
     id: 2,
     name: "Vitamina C 1000mg",
-    description: "Suplemento de vitamina C de liberación prolongada",
+    description: "Suplemento de vitamina C de liberación prolongada para reforzar defensas.",
     price: 2990,
-    image: "/src/images/photo/vitamin.png", 
+    image: "/src/Images/photo/vitamin.png", 
     category: "vitaminas-suplementos",
     stock: 40,
     rating: 4.8
@@ -25,7 +30,7 @@ export const mockProducts = [
     id: 3,
     name: "Paracetamol 500mg",
     description: "Analgésico y antipirético de venta libre",
-    price: 1990, // Ajustado a precio estándar de caja
+    price: 1990,
     image: "/src/images/photo/paracetamol.png",
     category: "medicamentos",
     stock: 100,
@@ -65,7 +70,7 @@ export const mockProducts = [
     id: 7,
     name: "Pañales Talla 3",
     description: "Pañales desechables ultra absorbentes",
-    price: 26990, // Conversión aprox de 32.99
+    price: 26990, 
     image: "/images/diapers.jpg",
     category: "infantil-mama",
     stock: 50,

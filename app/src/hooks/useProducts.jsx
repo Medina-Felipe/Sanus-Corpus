@@ -1,38 +1,42 @@
 import { useState, useEffect } from 'react';
-import { mockProducts } from '../data/products'; 
+import { productService } from '../services/productServices'; 
 
-export const useProducts = (selectedCategory = null) => {
+export const useProducts = (selectedCategory) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      
       try {
-        setLoading(true);
+        const data = await productService.getAll();
         
-        setTimeout(() => {
-          let filteredProducts = mockProducts;
+        if (selectedCategory) {
+          const filteredData = data.filter(product => {
+             
+             if (selectedCategory.category && product.category === selectedCategory.category) return true;
+
+             return product.category?.toLowerCase().includes(selectedCategory.name?.toLowerCase());
+          });
           
-          if (selectedCategory) {
-            filteredProducts = mockProducts.filter(
-              product => product.category === selectedCategory.slug
-            );
-          }
-          
-          setProducts(filteredProducts);
-          setLoading(false);
-        }, 500);
-        
+          setProducts(filteredData);
+        } else {
+          setProducts(data);
+        }
+
       } catch (err) {
-        console.error('Error fetching products:', err);
-        setProducts(mockProducts); 
+        console.error(err);
+        setError("Error al cargar los productos. Intente nuevamente.");
+      } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [selectedCategory]);
+  }, [selectedCategory]); 
 
   return { products, loading, error };
 };

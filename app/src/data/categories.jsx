@@ -1,6 +1,4 @@
-// src/data/categories.js
 
-// DATOS MOCK - Eliminar cuando tengas backend
 export const categories = [
   { 
     id: 1, 
@@ -46,7 +44,7 @@ export const categories = [
   },
   { 
     id: 7, 
-    name: "Higiene y Cuidado Personal", 
+    name: "Higiene", 
     slug: "higiene-cuidado-personal", 
     icon: "🚿",
     description: "Productos de higiene personal"
