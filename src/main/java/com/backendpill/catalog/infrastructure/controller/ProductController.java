@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST principal para la gestión del catálogo de Productos.
+ */
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -18,6 +21,12 @@ public class ProductController {
 
     private final ProductService productService;
 
+    /**
+     * Crea un nuevo producto con inventario y relaciones asociadas.
+     *
+     * @param request DTO complejo con datos del producto, marca, categorías y stock inicial.
+     * @return 201 Created con el producto creado.
+     */
     @PostMapping
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request));

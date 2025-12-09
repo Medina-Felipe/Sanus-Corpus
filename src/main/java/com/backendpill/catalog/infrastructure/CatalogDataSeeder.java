@@ -15,6 +15,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Componente encargado de la carga inicial de datos (Seeding).
+ * <p>
+ * Se ejecuta automáticamente al iniciar la aplicación (implementa {@link CommandLineRunner}).
+ * Útil para entornos de desarrollo y pruebas para contar con un catálogo base.
+ * <p>
+ * <b>Nota:</b> En entornos productivos, es recomendable desactivar este componente
+ * mediante perfiles (ej. {@code @Profile("!prod")}).
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -24,34 +33,42 @@ public class CatalogDataSeeder implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
+    /**
+     * Método principal de ejecución.
+     * Verifica si la base de datos está vacía antes de proceder para garantizar idempotencia.
+     */
     @Override
     @Transactional
     public void run(String... args) throws Exception {
         if (brandRepository.findAll().isEmpty()) {
-            log.info(" Iniciando el sembrado de datos (Seeding)...");
+            log.info("Sembrando datos iniciales del catálogo...");
             seedCatalog();
-            log.info(" Sembrado de datos completado exitosamente.");
+            log.info("Sembrado de catálogo completado.");
         } else {
-            log.info(" La base de datos ya tiene datos, se omite el Seeding.");
+            log.info("El catálogo ya contiene datos. Seeding omitido.");
         }
     }
 
+    /**
+     * Lógica de creación de entidades y relaciones.
+     * Utiliza persistencia en lote para las relaciones independientes.
+     */
     private void seedCatalog() {
-        // --- CREAR MARCAS ---
+        // 1. Crear Marcas
         Brand pfizer = Brand.builder().name("Pfizer").description("Gigante farmacéutico global").build();
         Brand bayer = Brand.builder().name("Bayer").description("Innovación en salud y nutrición").build();
 
-        // CORRECCIÓN: Guardamos iterando para evitar conflictos de interfaces
+        // Guardamos las referencias para usarlas en los productos
         Arrays.asList(pfizer, bayer).forEach(brandRepository::save);
 
-        // --- CREAR CATEGORÍAS ---
+        // 2. Crear Categorías
         Category analgesicos = Category.builder().name("Analgésicos").description("Para el dolor").build();
         Category antiinflamatorios = Category.builder().name("Antiinflamatorios").description("Para la inflamación").build();
         Category vitaminas = Category.builder().name("Vitaminas").description("Suplementos").build();
 
         Arrays.asList(analgesicos, antiinflamatorios, vitaminas).forEach(categoryRepository::save);
 
-        // --- CREAR PRODUCTOS ---
+        // 3. Crear Productos con sus relaciones (Stock, Marca, Categorías)
         Product aspirina = Product.builder()
                 .name("Aspirina Forte")
                 .slug("aspirina-forte-500mg")
@@ -64,6 +81,7 @@ public class CatalogDataSeeder implements CommandLineRunner {
                 .categories(new HashSet<>(List.of(analgesicos, antiinflamatorios)))
                 .build();
 
+        // Configuración de stock (Relación 1 a 1)
         Stock stockAspirina = Stock.builder().quantity(100).product(aspirina).build();
         aspirina.setStock(stockAspirina);
 
@@ -82,7 +100,7 @@ public class CatalogDataSeeder implements CommandLineRunner {
         Stock stockParacetamol = Stock.builder().quantity(500).product(paracetamol).build();
         paracetamol.setStock(stockParacetamol);
 
-        // CORRECCIÓN FINAL
+        // Persistencia final
         Arrays.asList(aspirina, paracetamol).forEach(productRepository::save);
     }
 }

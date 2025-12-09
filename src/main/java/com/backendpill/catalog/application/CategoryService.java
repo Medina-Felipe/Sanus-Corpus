@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio de aplicación para la gestión de Categorías.
+ */
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -20,13 +23,8 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CatalogMapper mapper;
 
-    // --- MÉTODOS PÚBLICOS (Retornan DTOs) ---
-
     @Transactional
     public CategoryResponse create(CategoryRequest request) {
-        // Validación opcional: verificar si ya existe el nombre
-        // if (categoryRepository.existsByName(request.name())) ...
-
         Category category = mapper.toCategoryEntity(request);
         return mapper.toCategoryResponse(categoryRepository.save(category));
     }
@@ -50,7 +48,6 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Categoría no encontrada con ID: " + id));
 
-        // Actualizamos los campos
         category.setName(request.name());
         category.setDescription(request.description());
 
@@ -62,20 +59,23 @@ public class CategoryService {
         if (!categoryRepository.existsById(id)) {
             throw new BusinessException("Categoría no encontrada con ID: " + id);
         }
-        // Nota Arquitectónica: Aquí deberías validar si hay productos usando esta categoría
-        // antes de borrarla, para evitar dejar productos "huérfanos" o errores de FK.
         categoryRepository.deleteById(id);
     }
 
-    // --- MÉTODOS INTERNOS (Para uso de ProductService) ---
-    // Estos métodos devuelven Entidades, NO DTOs.
-    // Solo deben ser usados por otros Servicios del mismo módulo (Catalog).
-
+    /**
+     * Recupera múltiples entidades de Categoría basándose en una lista de IDs.
+     * <p>
+     * <b>Validación:</b> Verifica que todos los IDs solicitados existan en la base de datos.
+     * Si alguno falta, se lanza una excepción para mantener la integridad de los datos.
+     *
+     * @param ids Conjunto de IDs solicitados.
+     * @return Lista de entidades Category.
+     * @throws BusinessException Si la cantidad de categorías encontradas difiere de las solicitadas.
+     */
     @Transactional(readOnly = true)
     public List<Category> findAllEntitiesByIds(Set<Long> ids) {
         List<Category> categories = categoryRepository.findAllById(ids);
 
-        // Validamos que se hayan encontrado todas
         if (categories.size() != ids.size()) {
             throw new BusinessException("Alguna de las categorías indicadas no existe");
         }

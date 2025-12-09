@@ -5,6 +5,12 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import java.util.Objects;
 
+/**
+ * Taxonomía para clasificar los tickets de soporte.
+ * <p>
+ * Permite agrupar las incidencias (ej. "Problemas de Pago", "Bug en la App")
+ * para generar reportes y asignaciones automáticas.
+ */
 @Entity
 @Getter
 @Setter
@@ -19,6 +25,7 @@ public class SupportCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Nombre único de la categoría. */
     @Column(nullable = false, unique = true)
     private String name;
 

@@ -6,6 +6,15 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
+/**
+ * Representa la marca comercial o laboratorio farmacéutico fabricante.
+ * <p>
+ * Se modela como una entidad independiente para facilitar la normalización
+ * y evitar redundancia de cadenas de texto en la tabla de productos.
+ * <p>
+ * La relación inversa (Productos de una Marca) se gestiona a través del Repositorio
+ * y no mapeada en esta entidad por razones de eficiencia (Lazy Loading Performance).
+ */
 @Entity
 @Getter
 @Setter
@@ -25,10 +34,6 @@ public class Brand {
 
     @Lob
     private String description;
-
-    // ARQUITECTURA: Eliminamos @OneToMany List<Product>.
-    // Razón: Performance. No queremos cargar todos los productos al cargar la marca.
-    // Si necesitas los productos de una marca, úsalo en el Repository: findByBrandId(id).
 
     @Override
     public final boolean equals(Object o) {

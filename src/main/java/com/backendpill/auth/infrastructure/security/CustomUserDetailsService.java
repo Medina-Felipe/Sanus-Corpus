@@ -8,6 +8,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Adaptador para la carga de usuarios compatible con Spring Security.
+ * <p>
+ * Implementa la interfaz {@link UserDetailsService} del framework, utilizando
+ * el repositorio de dominio para buscar los datos y envolviéndolos en una
+ * implementación de {@link UserDetails} (Pattern Adapter).
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -18,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .map(SecurityUser::new) // <-- USO DEL ADAPTADOR (Mucho más limpio)
+                .map(SecurityUser::new)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
     }
 }

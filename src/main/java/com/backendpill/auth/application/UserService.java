@@ -13,36 +13,48 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Servicio de dominio responsable de la gestión integral de usuarios.
+ * <p>
+ * Maneja el ciclo de vida de los usuarios (CRUD), la encriptación de credenciales
+ * y la aplicación de reglas de negocio como unicidad de emails.
+ */
 @Service
 @RequiredArgsConstructor
-public class UserService { // ¡Ya no implementa UserDetailsService!
+public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder; // Inyección directa y segura
+    private final PasswordEncoder passwordEncoder;
 
-    // --- LÓGICA DE NEGOCIO ---
-
+    /**
+     * Registra un nuevo usuario en la base de datos aplicando reglas de negocio.
+     *
+     * @param request DTO con los datos del usuario.
+     * @return El usuario registrado en formato DTO.
+     * @throws BusinessException Si el correo electrónico ya está en uso.
+     */
     @Transactional
     public UserResponse register(UserRequest request) {
-        // 1. Validar reglas de negocio
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new BusinessException("El email ya está registrado");
         }
 
-        // 2. Crear entidad
         User newUser = userMapper.toEntity(request);
-
-        // 3. Aplicar seguridad y valores por defecto
         newUser.setPassword(passwordEncoder.encode(request.password()));
         newUser.setRole(Role.CLIENT);
 
-        // 4. Guardar
         User savedUser = userRepository.save(newUser);
-
         return userMapper.toUserResponse(savedUser);
     }
 
+    /**
+     * Busca un usuario por email y lo retorna en formato de respuesta.
+     *
+     * @param email Email a buscar.
+     * @return DTO del usuario encontrado.
+     * @throws BusinessException Si el usuario no existe.
+     */
     @Transactional(readOnly = true)
     public UserResponse findByEmailAsResponse(String email) {
         return userRepository.findByEmail(email)
@@ -50,8 +62,11 @@ public class UserService { // ¡Ya no implementa UserDetailsService!
                 .orElseThrow(() -> new BusinessException("Usuario no encontrado"));
     }
 
-    // Añadir dentro de UserService.java
-
+    /**
+     * Recupera la lista completa de usuarios del sistema.
+     *
+     * @return Lista de DTOs de usuarios.
+     */
     @Transactional(readOnly = true)
     public List<UserResponse> findAll() {
         return userRepository.findAll()
@@ -60,6 +75,13 @@ public class UserService { // ¡Ya no implementa UserDetailsService!
                 .toList();
     }
 
+    /**
+     * Busca un usuario por su ID.
+     *
+     * @param id ID del usuario.
+     * @return DTO del usuario encontrado.
+     * @throws BusinessException Si el usuario no existe.
+     */
     @Transactional(readOnly = true)
     public UserResponse findById(Long id) {
         return userRepository.findById(id)
@@ -67,21 +89,32 @@ public class UserService { // ¡Ya no implementa UserDetailsService!
                 .orElseThrow(() -> new BusinessException("Usuario no encontrado"));
     }
 
+    /**
+     * Actualiza la información personal de un usuario.
+     *
+     * @param id ID del usuario a modificar.
+     * @param request DTO con los nuevos datos.
+     * @return El usuario actualizado en formato DTO.
+     * @throws BusinessException Si el usuario no existe.
+     */
     @Transactional
     public UserResponse update(Long id, UserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Usuario no encontrado"));
 
-        // Usamos el mapper para actualizar los campos permitidos
         userMapper.updateUserFromDto(request, user);
-
-        // Si hay cambio de password, hay que encriptarla de nuevo aquí
-        // (Lógica omitida por brevedad, pero tenlo en cuenta)
+        // Nota: La actualización de contraseña requeriría un endpoint separado y re-encriptación.
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);
     }
 
+    /**
+     * Elimina un usuario del sistema.
+     *
+     * @param id ID del usuario a eliminar.
+     * @throws BusinessException Si el usuario no existe.
+     */
     @Transactional
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {

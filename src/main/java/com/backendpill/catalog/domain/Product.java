@@ -9,6 +9,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Entidad central del catálogo que representa un producto vendible.
+ * <p>
+ * Actúa como <b>Aggregate Root</b> (Raíz del Agregado) para las categorías y el stock
+ * desde una perspectiva de dominio. Gestiona su propio ciclo de vida y sus relaciones.
+ */
 @Entity
 @Getter
 @Setter
@@ -26,11 +32,13 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    // --- ¡AQUÍ ESTABA EL ERROR! ---
-    // Faltaba este campo para que funcione product.setSlug(...) en el servicio.
+    /**
+     * Identificador amigable para URLs (SEO Friendly).
+     * Ejemplo: "paracetamol-500mg-20-comprimidos".
+     * Debe ser único en todo el sistema.
+     */
     @Column(unique = true)
     private String slug;
-    // ------------------------------
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
@@ -38,14 +46,18 @@ public class Product {
     @Lob
     private String description;
 
-    // Campo para la URL de la imagen (lo tenías en el DTO pero faltaba aquí)
+    /** URL de la imagen referencial del producto almacenada en servicio externo (S3/Cloudinary). */
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TypeMedicine typeMedicine;
 
-    // Campo para activar/desactivar producto (Soft Delete lógico)
+    /**
+     * Indicador de disponibilidad lógica (Soft Delete).
+     * Si es falso, el producto no debe mostrarse en la tienda, pero persiste en base de datos
+     * para mantener integridad histórica de ventas.
+     */
     @Column(nullable = false)
     @Builder.Default
     private boolean active = true;
@@ -71,12 +83,23 @@ public class Product {
     @Builder.Default
     private Set<Category> categories = new HashSet<>();
 
-    // --- MÉTODOS HELPERS ---
+    // --- MÉTODOS DE DOMINIO (Helpers) ---
 
+    /**
+     * Asocia una categoría al producto.
+     * Utilizar este método en lugar de {@code getCategories().add()} para mantener el encapsulamiento.
+     *
+     * @param category La categoría a añadir.
+     */
     public void addCategory(Category category) {
         this.categories.add(category);
     }
 
+    /**
+     * Desasocia una categoría del producto.
+     *
+     * @param category La categoría a remover.
+     */
     public void removeCategory(Category category) {
         this.categories.remove(category);
     }

@@ -6,6 +6,13 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
+/**
+ * Representa el inventario físico disponible para un producto.
+ * <p>
+ * <b>Diseño de Arquitectura:</b> Se ha separado el Stock del Producto (relación 1 a 1)
+ * para permitir estrategias de bloqueo (Locking) independientes. Esto evita que
+ * la actualización de un precio bloquee la tabla de inventario durante transacciones concurrentes.
+ */
 @Entity
 @Getter
 @Setter
@@ -20,12 +27,22 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Cantidad física disponible en almacén.
+     * Debe ser mayor o igual a cero.
+     */
     @Column(nullable = false)
     private int quantity;
 
+    /**
+     * Producto asociado a este registro de stock.
+     * <p>
+     * Relación unidireccional desde Stock hacia Producto para facilitar la gestión
+     * de inventario sin necesidad de cargar toda la información del producto si no es necesario.
+     */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", referencedColumnName = "id", unique = true)
-    @ToString.Exclude // Evitamos bucle infinito al imprimir logs
+    @ToString.Exclude
     private Product product;
 
     @Override

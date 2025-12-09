@@ -14,6 +14,13 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Representa a un usuario registrado en la plataforma.
+ * <p>
+ * Esta entidad gestiona la información de credenciales, datos personales
+ * y relaciones de dominio como la lista de productos favoritos.
+ * Utiliza {@link AuditingEntityListener} para el rastreo automático de fechas.
+ */
 @Getter
 @Setter
 @Builder
@@ -47,11 +54,13 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    // --- RELACIONES ---
-
-    // ARQUITECTURA: Nota importante.
-    // Al usar FetchType.LAZY, asegúrate de usar @Transactional en el Servicio
-    // cuando accedas a los favoritos, o tendrás una LazyInitializationException.
+    /**
+     * Conjunto de productos marcados como favoritos por el usuario.
+     * <p>
+     * Se utiliza {@code FetchType.LAZY} para rendimiento.
+     * <b>Nota:</b> El acceso a esta colección debe realizarse dentro de una transacción activa.
+     * El setter directo está bloqueado para forzar el uso de los métodos de dominio {@code addFavorite} y {@code removeFavorite}.
+     */
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_favorites",
@@ -59,10 +68,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     @Builder.Default
-    @Setter(AccessLevel.NONE) // Bloqueamos el set directo para proteger la lógica
+    @Setter(AccessLevel.NONE)
     private Set<Product> favorites = new HashSet<>();
 
-    // --- AUDITORÍA ---
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -71,29 +79,47 @@ public class User {
     @Column(insertable = false)
     private LocalDateTime updatedAt;
 
-    // --- MÉTODOS DE DOMINIO (Rich Domain Model) ---
-    // Un arquitecto prefiere esto a usar user.getFavorites().add(product) en el servicio.
-
+    /**
+     * Agrega un producto a la lista de favoritos del usuario manteniendo la coherencia del modelo.
+     * <p>
+     * Este método es parte del <i>Rich Domain Model</i> y evita la manipulación directa de la colección.
+     *
+     * @param product El producto a agregar. Si es {@code null}, la operación se ignora.
+     */
     public void addFavorite(Product product) {
         if (product != null) {
             this.favorites.add(product);
-            // Si la relación fuera bidireccional, aquí haríamos: product.getUsers().add(this);
         }
     }
 
+    /**
+     * Elimina un producto de la lista de favoritos.
+     *
+     * @param product El producto a remover.
+     */
     public void removeFavorite(Product product) {
         this.favorites.remove(product);
     }
 
-    // Método auxiliar para obtener nombre completo
+    /**
+     * Obtiene el nombre completo del usuario concatenando nombre y apellido.
+     *
+     * @return Una cadena con el formato "Nombre Apellido".
+     */
     public String getFullName() {
         return this.name + " " + this.lastName;
     }
 
-    // --- EQUALS & HASHCODE (Crucial para JPA y Sets) ---
-    // Lombok estándar falla con JPA entities. Esta es la forma segura:
-    // Compara solo por ID si existe, o por referencia si es nuevo.
-
+    /**
+     * Compara la igualdad de esta entidad con otro objeto.
+     * <p>
+     * Implementación robusta para JPA que maneja correctamente los {@link HibernateProxy}.
+     * Dos entidades se consideran iguales si tienen el mismo ID de base de datos.
+     * Si la entidad no ha sido persistida (ID nulo), la igualdad se basa en la referencia de memoria.
+     *
+     * @param o El objeto con el que comparar.
+     * @return {@code true} si son la misma entidad, {@code false} en caso contrario.
+     */
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -105,6 +131,14 @@ public class User {
         return getId() != null && Objects.equals(getId(), user.getId());
     }
 
+    /**
+     * Genera un código hash consistente para la entidad.
+     * <p>
+     * Retorna el hash de la clase subyacente para garantizar consistencia incluso
+     * cuando el objeto es un proxy de Hibernate y sus campos aún no se han inicializado.
+     *
+     * @return El código hash de la entidad.
+     */
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();

@@ -8,10 +8,18 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+/**
+ * Componente de transformación de objetos (Object Mapping).
+ * <p>
+ * Responsable de convertir DTOs a Entidades y viceversa.
+ * <b>Principio de Diseño:</b> Este mapper es "tonto" (dumb), no contiene lógica de negocio
+ * ni realiza consultas a base de datos. Solo transforma datos que ya tiene en memoria.
+ */
 @Component
 public class CatalogMapper {
 
     // --- BRAND ---
+
     public Brand toBrandEntity(BrandRequest request) {
         return Brand.builder()
                 .name(request.name())
@@ -24,6 +32,7 @@ public class CatalogMapper {
     }
 
     // --- CATEGORY ---
+
     public Category toCategoryEntity(CategoryRequest request) {
         return Category.builder()
                 .name(request.name())
@@ -36,8 +45,13 @@ public class CatalogMapper {
     }
 
     // --- PRODUCT ---
-    // Nota: Aquí solo mapeamos datos planos. Las relaciones (Brand/Category)
-    // las inyectará el Servicio, porque el Mapper no debe llamar a la Base de Datos.
+
+    /**
+     * Crea una instancia base de Producto desde el Request.
+     * <p>
+     * <b>Nota:</b> Las relaciones complejas (Brand, Categories, Stock) no se asignan aquí,
+     * ya que requieren búsqueda en base de datos. Esa responsabilidad recae en el Servicio.
+     */
     public Product toProductEntity(ProductRequest request) {
         return Product.builder()
                 .name(request.name())
@@ -45,10 +59,14 @@ public class CatalogMapper {
                 .description(request.description())
                 .imageUrl(request.imageUrl())
                 .typeMedicine(request.typeMedicine())
-                .active(true) // Por defecto activo al crear
+                .active(true)
                 .build();
     }
 
+    /**
+     * Convierte un Producto completo (con sus relaciones cargadas) a un Response.
+     * Gestiona la extracción segura del stock (evitando NullPointerException).
+     */
     public ProductResponse toProductResponse(Product product) {
         return new ProductResponse(
                 product.getId(),
@@ -59,7 +77,7 @@ public class CatalogMapper {
                 product.getImageUrl(),
                 product.getTypeMedicine(),
                 product.isActive(),
-                toBrandResponse(product.getBrand()), // Reusamos el mapper de Brand
+                toBrandResponse(product.getBrand()),
                 product.getCategories().stream().map(this::toCategoryResponse).collect(Collectors.toSet()),
                 product.getStock() != null ? product.getStock().getQuantity() : 0
         );

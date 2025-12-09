@@ -8,7 +8,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-
+/**
+ * Cargador de datos iniciales para el módulo de Soporte.
+ * <p>
+ * Responsable de poblar la base de datos con las categorías de soporte predeterminadas
+ * al iniciar la aplicación, garantizando que el sistema sea operativo desde el primer despliegue.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -16,6 +21,12 @@ public class SupportDataSeeder implements CommandLineRunner {
 
     private final SupportCategoryRepository categoryRepository;
 
+    /**
+     * Ejecuta la lógica de sembrado de datos.
+     * <p>
+     * Implementa un chequeo de <b>Idempotencia</b>: verifica si la tabla ya tiene datos
+     * antes de insertar, evitando duplicados en reinicios sucesivos del servidor.
+     */
     @Override
     @Transactional
     public void run(String... args) throws Exception {
@@ -37,12 +48,11 @@ public class SupportDataSeeder implements CommandLineRunner {
                     .description("Información sobre productos o servicios.")
                     .build();
 
-            // Guardamos las categorías iniciales
             categoryRepository.save(tecnico);
             categoryRepository.save(facturacion);
             categoryRepository.save(general);
 
-            log.info("✅ Categorías de soporte creadas.");
+            log.info("✅ Categorías de soporte creadas exitosamente.");
         }
     }
 }

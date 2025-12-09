@@ -6,6 +6,13 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
+/**
+ * Categoría taxonómica para agrupar productos.
+ * <p>
+ * <b>Nota de Diseño:</b> Esta entidad mantiene una relación unidireccional.
+ * No contiene una lista de productos {@code @OneToMany} para evitar problemas de rendimiento
+ * (N+1 Selects) y consumo excesivo de memoria al cargar categorías populares.
+ */
 @Entity
 @Getter
 @Setter
@@ -17,16 +24,13 @@ import java.util.Objects;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Faltaba la estrategia
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
     private String description;
-
-    // ARQUITECTURA: Eliminamos la relación inversa @ManyToMany mappedBy.
-    // Mismo motivo: Performance y simplicidad.
 
     @Override
     public final boolean equals(Object o) {
